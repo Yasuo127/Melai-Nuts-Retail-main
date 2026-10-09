@@ -224,7 +224,7 @@ class StaffRepository {
       'p_received_date': receivedDate == null ? null : _date(receivedDate),
       'p_restock_threshold': restockThreshold,
       'p_assign_existing': assignExisting,
-      if (idempotencyKey != null) 'p_idempotency_key': idempotencyKey,
+      'p_idempotency_key': ?idempotencyKey,
     });
     return id as String;
   }
@@ -245,7 +245,7 @@ class StaffRepository {
         'p_delta': delta,
         'p_reason': reason,
         'p_note': note,
-        if (idempotencyKey != null) 'p_idempotency_key': idempotencyKey,
+        'p_idempotency_key': ?idempotencyKey,
       }));
 
   // ---- Transfers --------------------------------------------------------------
@@ -272,7 +272,7 @@ class StaffRepository {
         'p_variant_id': variantId,
         'p_quantity': quantity,
         'p_note': note,
-        if (idempotencyKey != null) 'p_idempotency_key': idempotencyKey,
+        'p_idempotency_key': ?idempotencyKey,
       })) as String;
 
   /// [action]: ship | reject (source branch) or cancel | receive (destination).

@@ -28,7 +28,9 @@ class _DeliveryRouteScreenState extends State<DeliveryRouteScreen> {
   Delivery get delivery => widget.delivery;
   bool _starting = false;
 
-  Future<void> _startDelivery(BuildContext context) async {
+  // Uses State.context (no parameter) so the `mounted` checks below guard
+  // the same context that is used after the await.
+  Future<void> _startDelivery() async {
     if (delivery.stops.isEmpty) {
       Navigator.of(context).pushReplacementNamed(AppRoutes.gpsTracking, arguments: delivery);
       return;
@@ -127,7 +129,7 @@ class _DeliveryRouteScreenState extends State<DeliveryRouteScreen> {
               label: 'Start Delivery',
               icon: Icons.play_circle_outline_rounded,
               loading: _starting,
-              onPressed: _starting ? null : () => _startDelivery(context),
+              onPressed: _starting ? null : _startDelivery,
             ),
           ],
         ),

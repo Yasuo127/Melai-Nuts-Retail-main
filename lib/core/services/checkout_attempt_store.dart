@@ -127,13 +127,11 @@ class CheckoutAttemptStore extends ChangeNotifier {
 
   @visibleForTesting
   CheckoutAttemptStore.withDependencies({
-    required CheckoutAttemptStorage storage,
-    required Future<Order?> Function(String uid, String key) lookup,
+    required this._storage,
+    required this._lookup,
     DateTime Function()? now,
     String Function()? newKey,
-  })  : _storage = storage,
-        _lookup = lookup,
-        _now = now ?? DateTime.now,
+  })  : _now = now ?? DateTime.now,
         _newKeyFn = newKey;
 
   static final CheckoutAttemptStore instance = CheckoutAttemptStore._();
