@@ -22,7 +22,7 @@
 //  * The Firebase service-account key lives only in Supabase secrets.
 //
 // Secrets: FIREBASE_SERVICE_ACCOUNT (the service-account JSON, whole file),
-// FIREBASE_PROJECT_ID (optional, defaults to melai-nuts-app).
+// FIREBASE_PROJECT_ID (optional, defaults to melai-nuts-app-2026).
 // Deploy with verify_jwt disabled: the Firebase token is verified here.
 import { createRemoteJWKSet, importPKCS8, jwtVerify, SignJWT } from "npm:jose@5.9.6";
 
@@ -79,7 +79,7 @@ Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") return json({ error: "Method not allowed." }, 405);
 
-  const projectId = Deno.env.get("FIREBASE_PROJECT_ID") ?? "melai-nuts-app";
+  const projectId = Deno.env.get("FIREBASE_PROJECT_ID") ?? "melai-nuts-app-2026";
   const rawKey = Deno.env.get("FIREBASE_SERVICE_ACCOUNT");
   if (!rawKey) {
     console.error("grant-role-claim: FIREBASE_SERVICE_ACCOUNT is not set");

@@ -20,12 +20,19 @@ import 'firebase_options.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  } on FirebaseException catch (e) {
-    if (e.code != 'duplicate-app') rethrow;
+    try {
+      await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    } on FirebaseException catch (e) {
+      if (e.code != 'duplicate-app') rethrow;
+    }
+    await DataSyncService.instance.initializeLocalDatabase();
+    await SupabaseService.instance.initialize();
+  } catch (e, st) {
+    // Show the problem on screen instead of leaving a black screen.
+    debugPrint('Startup failed: $e\n$st');
+    runApp(_StartupErrorApp(message: '$e'));
+    return;
   }
-  await DataSyncService.instance.initializeLocalDatabase();
-  await SupabaseService.instance.initialize();
   StaffSessionStore.instance.registerResetHook(StaffStore.instance.clear);
   // In-memory sync counters belong to one staff member; the queue itself stays
   // on disk, owned by (and only ever sent for) its own Firebase UID.
@@ -69,4 +76,39 @@ Future<void> main() async {
   unawaited(ConnectivityService.instance.start());
 
   runApp(const MelaiNutsApp());
+}
+
+/// Shown only when startup fails (e.g. missing env/firebase.json or
+/// env/supabase.json), so a config mistake is visible instead of a black screen.
+class _StartupErrorApp extends StatelessWidget {
+  const _StartupErrorApp({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(Icons.error_outline, color: Colors.red, size: 48),
+                const SizedBox(height: 16),
+                const Text(
+                  'The app could not start',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 12),
+                SelectableText(message),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

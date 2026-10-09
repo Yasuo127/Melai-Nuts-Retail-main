@@ -16,7 +16,7 @@ The app calls this function automatically (see `lib/core/services/supabase_token
 
 ### Create a least-privilege service account
 
-1. Google Cloud Console (https://console.cloud.google.com), project `melai-nuts-app` > IAM & Admin > Service Accounts > **Create service account**. Name it `supabase-role-claim`.
+1. Google Cloud Console (https://console.cloud.google.com), project `melai-nuts-app-2026` > IAM & Admin > Service Accounts > **Create service account**. Name it `supabase-role-claim`.
 2. Grant the single role **Firebase Authentication Admin**. Skip the optional steps and click Done.
 3. Open the new account > Keys > Add key > Create new key > **JSON**. A `.json` file downloads.
 4. Never commit this file or paste it anywhere except step below. Delete it from your computer afterwards.
@@ -30,7 +30,7 @@ Supabase Dashboard > Edge Functions > Secrets > add:
 | Name | Value |
 | --- | --- |
 | `FIREBASE_SERVICE_ACCOUNT` | the entire contents of the downloaded JSON |
-| `FIREBASE_PROJECT_ID` | `melai-nuts-app` (optional; this is the default) |
+| `FIREBASE_PROJECT_ID` | `melai-nuts-app-2026` (optional; this is the default) |
 
 ```bash
 supabase functions deploy grant-role-claim --no-verify-jwt
