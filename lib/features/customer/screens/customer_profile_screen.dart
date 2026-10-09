@@ -18,6 +18,9 @@ import 'saved_addresses_screen.dart';
 class CustomerProfileScreen extends StatelessWidget {
   const CustomerProfileScreen({super.key});
 
+  /// 50 -> "50", 12.5 -> "12.50".
+  static String _peso(double v) => v == v.roundToDouble() ? v.toInt().toString() : v.toStringAsFixed(2);
+
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
@@ -160,7 +163,7 @@ class CustomerProfileScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Golden Kernel Rewards', style: AppTextStyles.titleMd),
-                        Text('$points pts • Earn 1 pt per ₱50 spent', style: AppTextStyles.bodySm),
+                        Text('$points pts • Earn 1 pt per ₱${_peso(store.earnPesosPerPoint)} spent', style: AppTextStyles.bodySm),
                       ],
                     ),
                   ),

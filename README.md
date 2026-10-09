@@ -2,6 +2,9 @@
 
 A Prototype
 
+> **Admin website:** the Laravel dashboard is in [`admin/`](admin/README.md) and shares this app's
+> Supabase database. Start with [INTEGRATION.md](INTEGRATION.md).
+
 ## Setup: Firebase keys (required)
 
 Firebase API keys are **not committed**. Before running:
@@ -98,6 +101,7 @@ row-level-security policies that enforce staff access in the database.
 | `20261008010000_fix_staff_products_policy.sql` | **Required.** Scopes the staff product policy `TO authenticated`; without it signed-out (guest) catalog reads fail. |
 | `20261008020000_staff_idempotency_keys.sql` | Optional `p_idempotency_key` on `staff_adjust_batch` and `staff_request_transfer`: a retry applies once and replays the original result; the same key for a different request is refused. Apply **before** shipping the app build that sends keys. |
 | `20261008030000_staff_replay_safe_receive_and_transfer.sql` | `staff_respond_transfer` (ship / reject / cancel / receive) is idempotent by outcome: asking for the state a transfer is already in succeeds as a no-op (authorization still runs first; conflicting actions still error). `staff_receive_batch` gains the optional `p_idempotency_key`, so a replay returns the original batch instead of "code already exists". Same deploy order as above: migration first. |
+| `20261009000000_admin_portal.sql` | Functions and the `melai_admin_portal` login role for the Laravel admin website in `admin/` (orders, refunds, stock, products, loyalty, audit log), owner-editable loyalty earn rate (`earn_pesos_per_point`, default 50) and `get_loyalty_earn_rate` for the app. See INTEGRATION.md. |
 
 Verify with the suites in `supabase/tests/`, including
 `staff_cross_branch_test.sql` (cross-branch isolation, permission flags, replay

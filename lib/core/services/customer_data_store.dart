@@ -79,6 +79,9 @@ class CustomerDataStore extends ChangeNotifier {
   bool get hasLoaded => _uid != null;
 
   int pointsBalance = 0;
+
+  /// Pesos per point earned (owner setting; 50 until the server says otherwise).
+  double earnPesosPerPoint = 50;
   CustomerProfile? profile;
   List<CustomerAddress> addresses = [];
 
@@ -273,6 +276,7 @@ class CustomerDataStore extends ChangeNotifier {
         guard(() => PaymentsRepository.instance.fetchAll(firebaseUid)),
         guard(() => CustomerProfileRepository.instance.fetchAddresses(firebaseUid)),
         guard<CustomerProfile?>(() => CustomerProfileRepository.instance.fetchProfile(firebaseUid)),
+        guard(() => LoyaltyRepository.instance.fetchEarnPesosPerPoint()),
       ]);
 
       // Signed out (or switched account) while this was loading: drop it —
@@ -288,6 +292,8 @@ class CustomerDataStore extends ChangeNotifier {
       }
       final balance = results[1] as int?;
       if (balance != null) pointsBalance = balance;
+      final earnRate = results[9] as double?;
+      if (earnRate != null && earnRate >= 1) earnPesosPerPoint = earnRate;
       final txs = results[2] as List<LoyaltyPointTransaction>?;
       if (txs != null) {
         loyaltyTransactions
@@ -632,6 +638,7 @@ class CustomerDataStore extends ChangeNotifier {
     _loading = false;
     _error = null;
     pointsBalance = 0;
+    earnPesosPerPoint = 50;
     profile = null;
     addresses = [];
     lastSyncedAt = null;

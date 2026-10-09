@@ -23,6 +23,15 @@ class LoyaltyRepository {
     return (row?['points_balance'] as int?) ?? 0;
   }
 
+  /// Pesos spent per 1 point earned, as set by the owner in the admin portal
+  /// (`loyalty_cart_settings.earn_pesos_per_point`, read through the public
+  /// `get_loyalty_earn_rate` function). The database applies the same value
+  /// when it computes an order's points, so the text shown always matches.
+  Future<double> fetchEarnPesosPerPoint() async {
+    final result = await _client.rpc('get_loyalty_earn_rate');
+    return (result as num?)?.toDouble() ?? 50;
+  }
+
   Future<List<LoyaltyPointTransaction>> fetchTransactions(String firebaseUid) async {
     final raw = await _client
         .from('loyalty_transactions')
